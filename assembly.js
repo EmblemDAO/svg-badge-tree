@@ -5,6 +5,7 @@ function transformBadgeData( nodes ) {
     , index: parseInt(badge.id.charAt(badge.id.length-1)) 
     , pos: transformPosition(badge.position)
     , img: badge.image
+    , branching: ['C-1', 'C-2', 'B-1', 'D-1'].includes(badge.id)
   }));
 }
 
@@ -83,7 +84,8 @@ function createOriginNode( branch, index, total ) {
     id: branch + "-0",
     index: 0,
     pos: [x, y],
-    data: { awarded: true }
+    data: { awarded: true },
+    branching: false
   }
 }
 
@@ -113,9 +115,14 @@ function renderBranch( name, nodes, origin ) {
   console.log('Rendering branch with', nodes);
   let buffer = []
     , circles = [origin, ...nodes];
+  let branchNode = circles[1];
   for (let c = 1; c < circles.length; c++) {
-    // TODO Figure out how subbranches are denoted and keep a reference around 
-    buffer.push(renderConnection(circles[c-1], circles[c]));
+    if (c >= 1 && circles[c-1].branching) 
+      branchNode = circles[c-1];
+    let a = ((circles[c].index == 1 && circles[c].id.length > 3) || 
+              circles[c].id === 'C-2') ? branchNode : circles[c-1]
+      , b = circles[c];
+    buffer.push(renderConnection(a, b));
   } 
   for (let d = 0; d < circles.length; d++) {
     buffer.push(renderNode(circles[d]));
@@ -136,6 +143,7 @@ export default function( nodes ) {
         { name: 'D', col: "#75FBF3" },
         { name: 'E', col: "#9EFC4E" }
       ];
+  console.log(GRAPH);
   let tree = INFO.map((b, i) => {
     return renderBranch(b.name, GRAPH.filter(node => node.branch === b.name), createOriginNode(b.name, i, INFO.length-1));
   });
