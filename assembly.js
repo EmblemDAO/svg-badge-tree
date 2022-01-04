@@ -1,0 +1,140 @@
+function transformBadgeData( nodes ) {
+  return nodes.map(badge => ({
+    ...badge
+    , branch: badge.id.charAt(0)
+    , index: parseInt(badge.id.charAt(badge.id.length-1)) 
+    , pos: transformPosition(badge.position)
+    , img: badge.image
+  }));
+}
+
+function transformPosition( coords ) {
+  let x = 600 + (coords[0] * 100)
+    , y = 650 - (coords[1] * 100);
+  return [x, y];
+}
+
+function gatherStyles( branchInfo ) {
+  const classes = branchInfo.map( branch => {
+    return `.${branch.name} {
+              stroke: ${branch.col};
+              fill: ${branch.col};
+            }`;
+  });
+  return `<style type="text/css">
+            <![CDATA[
+              .con {
+                stroke-width: 3;
+                stroke: #BFBFBF;
+              }
+              .node {
+                stroke-width: 4;
+                stroke: #BFBFBF;
+                fill: black !important;
+              }
+              .inner {
+                stroke-width: 6;
+                stroke: #808080;
+              }
+              ${classes.join("\n")}
+            ]]>
+          </style> `;
+}
+
+function gatherDefinitions( branchInfo ) {
+  let defs = branchInfo.map((b) => {
+    return `<filter id="f${b.name}" x="-50%" y="-50%" width="400%" height="400%">
+              <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2" />
+              <feGaussianBlur result="blurOut" in="offOut" stdDeviation="18" />
+              <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+            </filter>
+            <filter id="f${b.name}c" x="-50%" y="-50%" width="400%" height="400%">
+              <feOffset result="offOut" in="SourceGraphic" dx="0" dy="1" />
+              <feGaussianBlur result="blurOut" in="offOut" stdDeviation="6" />
+              <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+            </filter>`;
+  });
+  return `<defs>
+            ${defs.join("\n")}
+          </defs>`;
+}
+
+function renderNexus() {
+  return `<circle cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
+}
+
+function createOriginNode( branch, index, total ) {
+  let a = (index / total) * Math.PI
+    , r = 84
+    , x = 500 + Math.cos(Math.PI + a) * r
+    , y = 650 - Math.sin(a) * r;
+  return {
+    branch,
+    id: branch + "-0",
+    index: 0,
+    pos: [x, y],
+    data: { awarded: true }
+  }
+}
+
+function renderNode( node ) {
+  let n = '';
+  if (node.data.awarded) {
+    n = `<circle class="${node.branch}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 42 : 12}"  />
+         <circle class="node ${node.branch}" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 44 : 14}" />`;
+  } else {
+    n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
+  }
+  if (node.img) {
+    n += `<circle class="inner" cx="${node.pos[0]}" cy="${node.pos[1]}" r="34" />`;
+    n += `<circle class="inner" cx="${node.pos[0]}" cy="${node.pos[1]}" r="26" />`;
+  }
+  return n;
+}
+
+function renderConnection( a, b ) {
+  if (b.data.awarded) {
+    return `<line class="con ${a.branch}" filter="url(#f${a.branch}c)" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
+  } else {
+    return `<line class="con" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
+  }
+}
+
+function renderBranch( name, nodes, origin ) {
+  console.log('Rendering branch with', nodes);
+  let buffer = []
+    , circles = [origin, ...nodes];
+  for (let c = 1; c < circles.length; c++) {
+    // TODO Figure out how subbranches are denoted and keep a reference around 
+    buffer.push(renderConnection(circles[c-1], circles[c]));
+  } 
+  for (let d = 0; d < circles.length; d++) {
+    buffer.push(renderNode(circles[d]));
+  }
+  // console.log("Buffer", buffer);
+  return `<g id="${name}">
+            ${buffer.join("\n")}
+          </g>`;
+}
+
+// EXPORT /////////////////////////////////////////////////////////////////////
+export default function( nodes ) {
+  const GRAPH = transformBadgeData(nodes)
+      , INFO = [
+        { name: 'A', col: '#EA3778' },
+        { name: 'B', col: "#FCF151" },
+        { name: 'C', col: "#E93323" },
+        { name: 'D', col: "#75FBF3" },
+        { name: 'E', col: "#9EFC4E" }
+      ];
+  let tree = INFO.map((b, i) => {
+    return renderBranch(b.name, GRAPH.filter(node => node.branch === b.name), createOriginNode(b.name, i, INFO.length-1));
+  });
+  // console.log(tree);
+  return `<svg width="1000" height="750" viewbox="-220 0 1440 750" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            ${ gatherDefinitions(INFO) }
+            ${ gatherStyles(INFO) }
+            ${ renderNexus() }
+            ${ tree.join("\n") }
+          </svg>`;
+}

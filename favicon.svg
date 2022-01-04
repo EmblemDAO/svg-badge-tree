@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="700px" height="700px" viewBox="0 0 700 700" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>safari-pinned-tab</title>
+    <defs>
+        <linearGradient x1="87.8685477%" y1="12.5575649%" x2="12.3906206%" y2="87.4219491%" id="linearGradient-1">
+            <stop stop-color="#39BBB5" offset="0%"></stop>
+            <stop stop-color="#FF8A00" offset="50.4462822%"></stop>
+            <stop stop-color="#FE5E49" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="safari-pinned-tab" transform="translate(-0.000000, 0.000000)" fill="url(#linearGradient-1)" fill-rule="nonzero">
+            <path d="M87.5,612.5 L5.68434189e-14,525.1 L5.68434189e-14,262.5 L5.68434189e-14,-5.68434189e-14 L262.6,-5.68434189e-14 L525.1,-5.68434189e-14 L612.6,87.4 L700,174.9 L700,437.4 L700,700 L437.5,700 L174.9,700 L87.5,612.5 Z M612.1,612 C612.2,611.7 612.3,521.5 612.4,411.5 L612.6,211.5 L550.8,149.5 L488.9,87.5 L288.2,87.5 L87.5,87.5 L87.5,288 L87.4,488.5 L149.4,550.6 L211.5,612.6 L411.7,612.6 C521.9,612.5 612.1,612.3 612.1,612 Z" id="Shape" transform="translate(350.000000, 350.000000) scale(-1, 1) rotate(-180.000000) translate(-350.000000, -350.000000) "></path>
+        </g>
+    </g>
+</svg>

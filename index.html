@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Badgeth Skill Tree Assembly</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style>
+      html, 
+      body {
+        color: #FFF;
+        font-family: Avenir, Helvetica, Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: darkcyan;
+      }
+      h1 {
+        padding: 0.5em 1em 0 1em; 
+      }
+      svg {
+        width: 100%;
+        height: auto;
+        margin: 0;
+      }
+      main {
+        padding: 0; 
+        background-color: #061111;
+        border-radius: 1vw;
+        border: 4px inset darkcyan;
+        margin: 1em auto;
+        width: 100%;
+        max-width: 1440px;
+        box-sizing: border-box;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BADG.ETH SKILL TREE ASSEMBLY</h1>
+    <main id="canvas"></main>
+    <script href="text/javascript" type="module">
+      import assembly from "./assembly.js";
+      import MOCK_BADGES from "./mockBadges.js";
+      // const MOCK_BADGES = [
+      //   {
+      //     id: 'A-1',
+      //     img: "images/scifi/a-1.svg",
+      //     pos: [-2.5, 0],
+      //     data: { awarded: true }
+      //   },
+      //   {
+      //     id: 'A-2',
+      //     img: "images/scifi/a-2.svg",
+      //     pos: [-4, 0],
+      //     data: { awarded: true }
+      //   },
+      //   {
+      //     id: 'A-3',
+      //     img: "images/scifi/a-3.svg",
+      //     pos: [-5.5, 0],
+      //     data: { awarded: false }
+      //   },
+      //   {
+      //     id: 'E-1',
+      //     img: "images/scifi/e-1.svg",
+      //     pos: [2.5, 0],
+      //     data: { awarded: true }
+      //   },
+      //   {
+      //     id: 'E-2',
+      //     img: "images/scifi/e-2.svg",
+      //     pos: [3.25, 1.25],
+      //     data: { awarded: true }
+      //   },
+      //   {
+      //     id: 'E-3',
+      //     img: "images/scifi/e-3.svg",
+      //     pos: [4, 0],
+      //     data: { awarded: true }
+      //   },
+      //   {
+      //     id: 'E-4',
+      //     img: "images/scifi/e-4.svg",
+      //     pos: [4.75, 1.25],
+      //     data: { awarded: false }
+      //   },
+      //   {
+      //     id: 'E-5',
+      //     img: "images/scifi/e-5.svg",
+      //     pos: [5.5, 0],
+      //     data: { awarded: false }
+      //   }
+      // ];
+      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES);
+    </script>
+  </body>
+</html>
