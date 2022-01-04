@@ -3,15 +3,15 @@ function position(x, y) {
 }
 
 const TRACK_INDEXING_A = "C-"
-    , TRACK_INDEXING_B = "C-<"
-    , TRACK_INDEXING_C = "C-<<"
-    , TRACK_INDEXING_D = "C-<<<"
-    , TRACK_INDEXING_E = "C-<<<<"
+    , TRACK_INDEXING_B = "C-1<"
+    , TRACK_INDEXING_C = "C-1<<"
+    , TRACK_INDEXING_D = "C-2<"
+    , TRACK_INDEXING_E = "C-2<<"
     , TRACK_QUERYING_A = "A-"
     , TRACK_DEVELOPMENT_A = "B-"
-    , TRACK_DEVELOPMENT_B = "B-<"
+    , TRACK_DEVELOPMENT_B = "B-1<"
     , TRACK_CURATING_A = "D-"
-    , TRACK_CURATING_B = "D-<"
+    , TRACK_CURATING_B = "D-1<"
     , TRACK_DELEGATING_A = "E-";
 
 export default [
@@ -27,13 +27,7 @@ export default [
     position: position(-1, 2),
     data: { awarded: true },
   },
-  {
-    id: TRACK_INDEXING_A + 2,
-    image: "/images/scifi/2.svg",
-    position: position(-1, 3.5),
-    data: { awarded: true },
-  },
-
+  
   {
     id: TRACK_INDEXING_B + 1,
     image: "/images/scifi/5.svg",
@@ -47,32 +41,38 @@ export default [
     data: { awarded: true },
   },
   // {
-  //   id: TRACK_INDEXING_B + 3,
-  //   image: "/images/scifi/7.svg",
-  //   position: position(2, 5),
-  //   data: { awarded: false },
-  // },
-
-  {
-    id: TRACK_INDEXING_C + 1,
-    image: "/images/scifi/5.svg",
-    position: position(-2, 3),
-    data: { awarded: true },
-  },
-  {
-    id: TRACK_INDEXING_C + 2,
-    image: "/images/scifi/6.svg",
-    position: position(-3, 4),
-    data: { awarded: true },
-  },
-  // {
-  //   id: TRACK_INDEXING_C + 3,
-  //   image: "/images/scifi/7.svg",
-  //   position: position(-4, 5),
-  //   data: { awarded: false },
-  // },
-
-  {
+    //   id: TRACK_INDEXING_B + 3,
+    //   image: "/images/scifi/7.svg",
+    //   position: position(2, 5),
+    //   data: { awarded: false },
+    // },
+    
+    {
+      id: TRACK_INDEXING_C + 1,
+      image: "/images/scifi/5.svg",
+      position: position(-2, 3),
+      data: { awarded: true },
+    },
+    {
+      id: TRACK_INDEXING_C + 2,
+      image: "/images/scifi/6.svg",
+      position: position(-3, 4),
+      data: { awarded: true },
+    },
+    // {
+      //   id: TRACK_INDEXING_C + 3,
+      //   image: "/images/scifi/7.svg",
+      //   position: position(-4, 5),
+      //   data: { awarded: false },
+      // },
+      
+    {
+      id: TRACK_INDEXING_A + 2,
+      image: "/images/scifi/2.svg",
+      position: position(-1, 3.5),
+      data: { awarded: true },
+    },
+      {
     id: TRACK_INDEXING_D + 1,
     image: "/images/scifi/7.svg",
     position: position(-0.25, 4.75),
@@ -125,19 +125,6 @@ export default [
     data: { awarded: true },
   },
   {
-    id: TRACK_DEVELOPMENT_B + 1,
-    image: "/images/scifi/9.svg",
-    position: position(-4, 1.5),
-    data: { awarded: true },
-  },
-  {
-    id: TRACK_DEVELOPMENT_B + 2,
-    image: "/images/scifi/10.svg",
-    position: position(-5.5, 1.5),
-    data: { awarded: true },
-  },
-
-  {
     id: TRACK_DEVELOPMENT_A + 2,
     image: "/images/scifi/14.svg",
     position: position(-3.5, 2.5),
@@ -155,6 +142,19 @@ export default [
     position: position(-5.5, 4.5),
     data: { awarded: false },
   },
+  {
+    id: TRACK_DEVELOPMENT_B + 1,
+    image: "/images/scifi/9.svg",
+    position: position(-4, 1.5),
+    data: { awarded: true },
+  },
+  {
+    id: TRACK_DEVELOPMENT_B + 2,
+    image: "/images/scifi/10.svg",
+    position: position(-5.5, 1.5),
+    data: { awarded: true },
+  },
+
 
   {
     id: TRACK_CURATING_A + 1,
