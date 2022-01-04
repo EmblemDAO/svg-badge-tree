@@ -59,6 +59,16 @@ function gatherDefinitions( branchInfo ) {
           </defs>`;
 }
 
+function renderReusableElements() {
+  let elements = "<defs>\n";
+  // Inner circles (part of node image background)
+  elements += `<g id="inner">
+                 <circle class="inner" cx="0" cy="0" r="34" />
+                 <circle class="inner" cx="0" cy="0" r="26" />
+               </g>`;
+  return elements + "\n</defs>";
+}
+
 function renderNexus() {
   return `<circle cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
 }
@@ -86,8 +96,7 @@ function renderNode( node ) {
     n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
   }
   if (node.img) {
-    n += `<circle class="inner" cx="${node.pos[0]}" cy="${node.pos[1]}" r="34" />`;
-    n += `<circle class="inner" cx="${node.pos[0]}" cy="${node.pos[1]}" r="26" />`;
+    n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />`;
   }
   return n;
 }
@@ -134,6 +143,7 @@ export default function( nodes ) {
   return `<svg width="1000" height="750" viewbox="-220 0 1440 750" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             ${ gatherDefinitions(INFO) }
             ${ gatherStyles(INFO) }
+            ${ renderReusableElements() }
             ${ renderNexus() }
             ${ tree.join("\n") }
           </svg>`;
