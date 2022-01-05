@@ -1,10 +1,15 @@
 function transformBadgeData( nodes ) {
+  const placeholders = [
+    'Compass_Set_1'
+  , 'Compass_Set_2'
+  , 'Compass_Set_3'
+  ];
   return nodes.map(badge => ({
     ...badge
     , branch: badge.id.charAt(0)
     , index: parseInt(badge.id.charAt(badge.id.length-1)) 
     , pos: transformPosition(badge.position)
-    , img: badge.image
+    , img: placeholders[Math.floor(Math.random() * 3)]
     , branching: ['C-1', 'C-2', 'B-1', 'D-1'].includes(badge.id)
   }));
 }
@@ -63,10 +68,14 @@ function gatherDefinitions( branchInfo ) {
 function renderReusableElements() {
   let elements = "<defs>\n";
   // Inner circles (part of node image background)
-  elements += `<g id="inner">
-                 <circle class="inner" cx="0" cy="0" r="34" />
-                 <circle class="inner" cx="0" cy="0" r="26" />
-               </g>`;
+  // elements += `<g id="inner">
+  //                <circle class="inner" cx="0" cy="0" r="34" />
+  //                <circle class="inner" cx="0" cy="0" r="26" />
+  //              </g>`;
+  // Placeholder images
+  elements += `<g id="Compass_Set_1"><image href="/assets/Compass_Set_1.png" x="-90" y="-90" width="180" height="180" /></g>`;
+  elements += `<g id="Compass_Set_2"><image href="/assets/Compass_Set_2.png" x="-90" y="-90" width="180" height="180" /></g>`;
+  elements += `<g id="Compass_Set_3"><image href="/assets/Compass_Set_3.png" x="-90" y="-90" width="180" height="180" /></g>`;
   return elements + "\n</defs>";
 }
 
@@ -92,13 +101,15 @@ function createOriginNode( branch, index, total ) {
 function renderNode( node ) {
   let n = '';
   if (node.data.awarded) {
-    n = `<circle class="${node.branch}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 42 : 12}"  />
-         <circle class="node ${node.branch}" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 44 : 14}" />`;
+    if (node.img) {
+      // n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />\n`;
+      n += `<use href="#${node.img}" x="${node.pos[0]}" y="${node.pos[1]}" />`;
+    } else {
+      n = `<circle class="${node.branch}" filter="url(#f${node.branch}c)" cx="${node.pos[0]}" cy="${node.pos[1]}" r="12"  />
+           <circle class="node ${node.branch}" cx="${node.pos[0]}" cy="${node.pos[1]}" r="14" />`;
+    }
   } else {
     n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
-  }
-  if (node.img) {
-    n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />`;
   }
   return n;
 }
