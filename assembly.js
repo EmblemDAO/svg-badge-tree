@@ -20,6 +20,9 @@ function gatherStyles( branchInfo ) {
     return `.${branch.name} {
               stroke: ${branch.col};
               fill: ${branch.col};
+            }
+            .${branch.name.toLowerCase()} {
+              stroke: ${branch.col};
             }`;
   });
   return `<style type="text/css">
@@ -38,6 +41,15 @@ function gatherStyles( branchInfo ) {
                 stroke: #808080;
               }
               ${classes.join("\n")}
+              #NEXUS, .tree {
+                transition: opacity 1s ease;
+              }
+              @media only screen and (max-width: 480px) {
+                #NEXUS, .tree { opacity: 0 }
+              }
+              @media only screen and (min-width: 480px) {
+                #roster { opacity: 0 }
+              } 
             ]]>
           </style> `;
 }
@@ -71,7 +83,7 @@ function renderReusableElements() {
 }
 
 function renderNexus() {
-  return `<circle cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
+  return `<circle id="NEXUS" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
 }
 
 function createOriginNode( branch, index, total ) {
@@ -103,6 +115,12 @@ function renderNode( node ) {
   return n;
 }
 
+function renderRosterNode( node, x, y ) {
+  return `<circle class="${node.branch.toLowerCase()}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${x}" cy="${y}" r="42"  />
+          <circle class="node ${node.branch.toLowerCase()}" cx="${x}" cy="${y}" r="44" />
+          <use href="#inner" x="${x}" y="${y}" />`;
+}
+
 function renderConnection( a, b ) {
   if (b.data.awarded) {
     return `<line class="con ${a.branch}" filter="url(#f${a.branch}c)" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
@@ -128,8 +146,14 @@ function renderBranch( name, nodes, origin ) {
     buffer.push(renderNode(circles[d]));
   }
   // console.log("Buffer", buffer);
-  return `<g id="${name}">
+  return `<g id="${name}" class="tree">
             ${buffer.join("\n")}
+          </g>`;
+}
+
+function renderRoster( roster ) {
+  return `<g id="roster">
+            ${roster.join("\n")}
           </g>`;
 }
 
@@ -141,18 +165,29 @@ export default function( nodes ) {
         { name: 'B', col: "#FCF151" },
         { name: 'C', col: "#E93323" },
         { name: 'D', col: "#75FBF3" },
-        { name: 'E', col: "#9EFC4E" }
-      ];
-  console.log(GRAPH);
+        { name: 'E', col: "#9EFC4E" }]
+      , ROSTER = GRAPH.filter((node) => node.data && node.data.awarded);
+  // console.log(GRAPH);
   let tree = INFO.map((b, i) => {
     return renderBranch(b.name, GRAPH.filter(node => node.branch === b.name), createOriginNode(b.name, i, INFO.length-1));
   });
+  let row = 0, col = 0;
+  let roster = [];
+  for (let n of ROSTER) {
+    roster.push(renderRosterNode(n, (col - 1) * 100, (row + 1) * 100));
+    col += 1;
+    if (col >= 3) {
+      row += 1;
+      col = 0;
+    }
+  }
   // console.log(tree);
-  return `<svg width="1000" height="750" viewbox="-220 0 1440 750" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  return `<svg viewbox="-220 0 1440 750" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             ${ gatherDefinitions(INFO) }
             ${ gatherStyles(INFO) }
             ${ renderReusableElements() }
             ${ renderNexus() }
+            ${ renderRoster(roster) }
             ${ tree.join("\n") }
           </svg>`;
 }
