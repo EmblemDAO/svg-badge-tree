@@ -158,7 +158,7 @@ function renderRoster( roster ) {
 }
 
 // EXPORT /////////////////////////////////////////////////////////////////////
-export default function( nodes, full ) {
+export default function( nodes ) {
   const GRAPH = transformBadgeData(nodes)
       , INFO = [
         { name: 'A', col: '#EA3778' },
@@ -174,7 +174,7 @@ export default function( nodes, full ) {
   let row = 0, col = 0;
   let roster = [];
   for (let n of ROSTER) {
-    roster.push(renderRosterNode(n, (col - 1) * 100, (row + 1) * 100));
+    roster.push(renderRosterNode(n, 510 + ((col - 1)) * 100, (row + 1) * 100 - 25));
     col += 1;
     if (col >= 3) {
       row += 1;
@@ -182,7 +182,10 @@ export default function( nodes, full ) {
     }
   }
   // console.log(tree);
-  return `<svg viewbox="${ full ? '-220 0 1440 750' : '-220 0 440 ' + (row + 2) * 100 }" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  return `<svg viewbox="-220 0 1440 750" 
+               preserveAspectRatio="xMidYMin slice"              
+               xmlns="http://www.w3.org/2000/svg" 
+               xmlns:xlink="http://www.w3.org/1999/xlink">
             ${ gatherDefinitions(INFO) }
             ${ gatherStyles(INFO) }
             ${ renderReusableElements() }

@@ -29,7 +29,8 @@
       }
       svg {
         width: 100%;
-        height: auto;
+        height: 600px;
+        display: flex;
         margin: 0;
       }
       main {
@@ -41,6 +42,9 @@
         box-sizing: border-box;
         overflow: auto;
       }
+      @media only screen and (min-width: 480px) {
+        svg { height: auto; }
+      }
     </style>
   </head>
   <body>
@@ -49,69 +53,7 @@
     <script href="text/javascript" type="module">
       import assembly from "./assembly.js";
       import MOCK_BADGES from "./mockBadges.js";
-      // const MOCK_BADGES = [
-      //   {
-      //     id: 'A-1',
-      //     img: "images/scifi/a-1.svg",
-      //     pos: [-2.5, 0],
-      //     data: { awarded: true }
-      //   },
-      //   {
-      //     id: 'A-2',
-      //     img: "images/scifi/a-2.svg",
-      //     pos: [-4, 0],
-      //     data: { awarded: true }
-      //   },
-      //   {
-      //     id: 'A-3',
-      //     img: "images/scifi/a-3.svg",
-      //     pos: [-5.5, 0],
-      //     data: { awarded: false }
-      //   },
-      //   {
-      //     id: 'E-1',
-      //     img: "images/scifi/e-1.svg",
-      //     pos: [2.5, 0],
-      //     data: { awarded: true }
-      //   },
-      //   {
-      //     id: 'E-2',
-      //     img: "images/scifi/e-2.svg",
-      //     pos: [3.25, 1.25],
-      //     data: { awarded: true }
-      //   },
-      //   {
-      //     id: 'E-3',
-      //     img: "images/scifi/e-3.svg",
-      //     pos: [4, 0],
-      //     data: { awarded: true }
-      //   },
-      //   {
-      //     id: 'E-4',
-      //     img: "images/scifi/e-4.svg",
-      //     pos: [4.75, 1.25],
-      //     data: { awarded: false }
-      //   },
-      //   {
-      //     id: 'E-5',
-      //     img: "images/scifi/e-5.svg",
-      //     pos: [5.5, 0],
-      //     data: { awarded: false }
-      //   }
-      // ];
-      var desktop = window.innerWidth > 480;
-      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
-      const SVG = document.querySelector('svg');
-      window.addEventListener('resize', (event) => {
-        if (window.innerWidth <= 480 && desktop) {
-          console.log("adjusting!");
-          desktop = false;
-          document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
-        } else if (window.innerWidth > 480 && !desktop) {
-          desktop = true;
-          document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
-        }
-      });
+      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES);
     </script>
   </body>
 </html>
