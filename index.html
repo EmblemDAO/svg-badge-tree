@@ -7,6 +7,11 @@
     <meta name="theme-color" content="#e93323" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <style>
+      html {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+      }
       html, 
       body {
         color: #FFF;
@@ -19,9 +24,10 @@
         background-repeat: no-repeat;
         background-image: linear-gradient(180deg, rgba(233,51,35,1) 0%, rgba(233,153,35,1) 100%);
         background-size: 100% 100%;
-        background-attachment: fixed;
-        min-height: 100%;
+        background-attachment: scroll;
+        min-height: 100vh;
         height: 100%;
+        flex-grow: 2;
       }
       h1 {
         padding: 0.5em 1em 0 1em; 

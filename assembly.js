@@ -177,7 +177,7 @@ export default function( nodes ) {
     }
   }
   // console.log(tree);
-  return `<svg viewbox="-220 0 1440 750" 
+  return `<svg viewBox="-220 0 1440 750" 
                preserveAspectRatio="xMidYMin slice"              
                xmlns="http://www.w3.org/2000/svg" 
                xmlns:xlink="http://www.w3.org/1999/xlink">
