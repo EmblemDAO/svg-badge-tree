@@ -48,11 +48,6 @@ function gatherDefinitions( branchInfo ) {
               <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2" />
               <feGaussianBlur result="blurOut" in="offOut" stdDeviation="18" />
               <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
-            </filter>
-            <filter id="f${b.name}c" x="-50%" y="-50%" width="400%" height="400%">
-              <feOffset result="offOut" in="SourceGraphic" dx="0" dy="1" />
-              <feGaussianBlur result="blurOut" in="offOut" stdDeviation="6" />
-              <feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
             </filter>`;
   });
   return `<defs>
@@ -105,7 +100,7 @@ function renderNode( node ) {
 
 function renderConnection( a, b ) {
   if (b.data.awarded) {
-    return `<line class="con ${a.branch}" filter="url(#f${a.branch}c)" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
+    return `<line class="con ${a.branch}" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
   } else {
     return `<line class="con" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
   }
