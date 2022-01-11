@@ -99,7 +99,19 @@
       //     data: { awarded: false }
       //   }
       // ];
-      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES);
+      var desktop = window.innerWidth > 480;
+      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
+      const SVG = document.querySelector('svg');
+      window.addEventListener('resize', (event) => {
+        if (window.innerWidth <= 480 && desktop) {
+          console.log("adjusting!");
+          desktop = false;
+          document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
+        } else if (window.innerWidth > 480 && !desktop) {
+          desktop = true;
+          document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES, desktop);
+        }
+      });
     </script>
   </body>
 </html>
