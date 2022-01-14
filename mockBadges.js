@@ -23,7 +23,11 @@ export default [
 
   {
     id: TRACK_INDEXING_A + 1,
+<<<<<<< Updated upstream
     image: "/images/scifi/1.svg",
+=======
+    image: "sketches/shield1",
+>>>>>>> Stashed changes
     position: position(-1, 2),
     data: { awarded: true },
   },

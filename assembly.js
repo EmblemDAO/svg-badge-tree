@@ -58,10 +58,22 @@ function gatherDefinitions( branchInfo ) {
 function renderReusableElements() {
   let elements = "<defs>\n";
   // Inner circles (part of node image background)
+<<<<<<< Updated upstream
   elements += `<g id="inner">
                  <circle class="inner" cx="0" cy="0" r="34" />
                  <circle class="inner" cx="0" cy="0" r="26" />
                </g>`;
+=======
+  // elements += `<g id="inner">
+  //                <circle class="inner" cx="0" cy="0" r="34" />
+  //                <circle class="inner" cx="0" cy="0" r="26" />
+  //              </g>`;
+  // Placeholder images
+  nodes.forEach((node) => {
+    // EDIT WIDTH/HEIGHT (X/Y MUST BE HALF)
+    elements += `<g id="${node.image}"><image href="/assets/${node.image}.png" x="-75" y="-75" width="150" height="150" /></g>`;
+  });
+>>>>>>> Stashed changes
   return elements + "\n</defs>";
 }
 
@@ -112,11 +124,21 @@ function renderBranch( name, nodes, origin ) {
     , circles = [origin, ...nodes];
   let branchNode = circles[1];
   for (let c = 1; c < circles.length; c++) {
+<<<<<<< Updated upstream
     if (c >= 1 && circles[c-1].branching) 
       branchNode = circles[c-1];
     let a = ((circles[c].index == 1 && circles[c].id.length > 3) || 
               circles[c].id === 'C-2') ? branchNode : circles[c-1]
       , b = circles[c];
+=======
+    if (c >= 1 && circles[c - 1].branching) branchNode = circles[c - 1];
+    let a =
+      (circles[c].index == 1 && circles[c].id.length > 3) ||
+        circles[c].id === "C-2"
+        ? branchNode
+        : circles[c - 1],
+      b = circles[c];
+>>>>>>> Stashed changes
     buffer.push(renderConnection(a, b));
   } 
   for (let d = 0; d < circles.length; d++) {
