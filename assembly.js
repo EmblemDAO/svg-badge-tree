@@ -56,6 +56,9 @@ function gatherStyles( branchInfo ) {
                 stroke-width: 4;
                 stroke: #BFBFBF;
                 fill: black !important;
+              }
+              .node,
+              .icon {
                 transition: all .6s ease, opacity 0s;
               }
               .inner {
@@ -71,7 +74,8 @@ function gatherStyles( branchInfo ) {
                 transition: opacity .6s ease;
               }
               .gridded .con,
-              .gridded .node:not([data-awarded]) {
+              .gridded .node:not([data-awarded]),
+              .gridded .icon:not([data-awarded]) {
                 opacity: 0;
               }
               .gridded .label {
@@ -138,6 +142,7 @@ function createOriginNode( branch, index, total ) {
 }
 
 function renderNode( node ) {
+  const AWARDED = node.data.awarded;
   let n = `<g class="gridItem" data-tpos="[${node.tpos[0]}, ${node.tpos[1]}]" data-gpos="[${node.gpos[0]}, ${node.gpos[1]}]">`;
   if (node.data.awarded) {
     n += `<circle class="${node.branch}" ${ (node.img) ? 'data-awarded' : '' } filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 42 : 12}"  />
@@ -148,9 +153,9 @@ function renderNode( node ) {
   } else {
     n += `<circle class="node" cx="${node.tpos[0]}" cy="${node.tpos[1]}" r="44" />`; 
   }
-  // if (node.img) {
-  //   n += `<use href="#inner" x="${node.tpos[0]}" y="${node.tpos[1]}" />\n`;
-  // }
+  if (node.img) {
+    n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
+  }
   n += `</g>`;
   return n;
 }

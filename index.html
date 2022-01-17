@@ -75,6 +75,11 @@
               circle.setAttribute('cx', attr[0]);
               circle.setAttribute('cy', attr[1]);
             });
+            let img = node.querySelector('.icon[data-awarded]');
+            if (img) {
+              img.setAttribute('x', attr[0]);
+              img.setAttribute('y', attr[1]);
+            }
           });
         });
       });
