@@ -27,6 +27,7 @@ function gatherStyles( branchInfo ) {
   });
   return `<style type="text/css">
             <![CDATA[
+              @import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
               .con {
                 stroke-width: 3;
                 stroke: #BFBFBF;
@@ -39,6 +40,13 @@ function gatherStyles( branchInfo ) {
               .inner {
                 stroke-width: 6;
                 stroke: #808080;
+              }
+              .label {
+                fill: #7efcf6;
+                text-anchor: middle;
+                font-family: 'Inter', sans-serif;
+                font-size: 12px;
+                text-transform: uppercase;
               }
               ${classes.join("\n")}
               #NEXUS, .tree {
@@ -101,11 +109,14 @@ function renderNode( node ) {
   if (node.data.awarded) {
     n = `<circle class="${node.branch}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 42 : 12}"  />
          <circle class="node ${node.branch}" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 44 : 14}" />`;
-  } else {
-    n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
+        } else {
+          n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
+        }
+  if (node.data.definitionID) {
+    n += `<text class="label" x="${node.pos[0]}" y="${node.pos[1] + 64}">${node.data.definitionID}</text>`;
   }
   if (node.img) {
-    n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />`;
+    n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />\n`;
   }
   return n;
 }
