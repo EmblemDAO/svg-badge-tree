@@ -1,9 +1,11 @@
 function transformBadgeData( nodes ) {
+  const GRID_ITEMS = nodes.filter((node) => node.data && node.data.awarded);
   return nodes.map(badge => ({
     ...badge
     , branch: badge.id.charAt(0)
     , index: parseInt(badge.id.charAt(badge.id.length-1)) 
-    , pos: transformPosition(badge.position)
+    , tpos: transformPosition(badge.position)
+    , gpos: generateGridPosition(badge, GRID_ITEMS)
     , img: badge.image
     , branching: ['C-1', 'C-2', 'B-1', 'D-1'].includes(badge.id)
   }));
@@ -13,6 +15,20 @@ function transformPosition( coords ) {
   let x = 600 + (coords[0] * 100)
     , y = 650 - (coords[1] * 100);
   return [x, y];
+}
+
+function generateGridPosition( badge, pool ) {
+  const INDEX = pool.indexOf(badge)
+      , COLS = 8
+      , COL_WIDTH = 1240 / COLS;
+  if (INDEX >= 0) {
+    let col = (INDEX > COLS) ? INDEX % pool.length : INDEX;
+    const row = Math.floor(INDEX / COLS);
+    col -= row * COLS;
+    return [col * COL_WIDTH - 40, 90 + row * COL_WIDTH + 50];
+  } else {
+    return [0, 0];
+  }
 }
 
 function gatherStyles( branchInfo ) {
@@ -31,11 +47,16 @@ function gatherStyles( branchInfo ) {
               .con {
                 stroke-width: 3;
                 stroke: #BFBFBF;
+                transition: opacity 0s;
+              }
+              .gridItem text {
+                opacity: 0;
               }
               .node {
                 stroke-width: 4;
                 stroke: #BFBFBF;
                 fill: black !important;
+                transition: all .6s ease, opacity 0s;
               }
               .inner {
                 stroke-width: 6;
@@ -47,6 +68,17 @@ function gatherStyles( branchInfo ) {
                 font-family: 'Inter', sans-serif;
                 font-size: 12px;
                 text-transform: uppercase;
+                transition: opacity .6s ease;
+              }
+              .gridded .con,
+              .gridded .node:not([data-awarded]) {
+                opacity: 0;
+              }
+              .gridded .label {
+                opacity: 1;
+              }
+              #NEXUS.hidden {
+                opacity: 0;
               }
               ${classes.join("\n")}
               #NEXUS, .tree {
@@ -86,7 +118,7 @@ function renderReusableElements() {
 }
 
 function renderNexus() {
-  return `<circle id="NEXUS" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
+  return `<circle id="NEXUS" class="hidden" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
 }
 
 function createOriginNode( branch, index, total ) {
@@ -98,26 +130,28 @@ function createOriginNode( branch, index, total ) {
     branch,
     id: branch + "-0",
     index: 0,
-    pos: [x, y],
+    tpos: [x, y],
+    gpos: [x, y],
     data: { awarded: true },
     branching: false
   }
 }
 
 function renderNode( node ) {
-  let n = '';
+  let n = `<g class="gridItem" data-tpos="[${node.tpos[0]}, ${node.tpos[1]}]" data-gpos="[${node.gpos[0]}, ${node.gpos[1]}]">`;
   if (node.data.awarded) {
-    n = `<circle class="${node.branch}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 42 : 12}"  />
-         <circle class="node ${node.branch}" cx="${node.pos[0]}" cy="${node.pos[1]}" r="${node.img ? 44 : 14}" />`;
-        } else {
-          n = `<circle class="node" cx="${node.pos[0]}" cy="${node.pos[1]}" r="44" />`; 
-        }
-  if (node.data.definitionID) {
-    n += `<text class="label" x="${node.pos[0]}" y="${node.pos[1] + 64}">${node.data.definitionID}</text>`;
+    n += `<circle class="${node.branch}" ${ (node.img) ? 'data-awarded' : '' } filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 42 : 12}"  />
+         <circle class="node ${node.branch}" ${ (node.img) ? 'data-awarded' : '' } cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 44 : 14}" />`;
+    if (node.data.definitionID) {
+      n += `<text class="label" x="${node.gpos[0]}" y="${node.gpos[1] + 64}">${node.data.definitionID}</text>`;
+    }
+  } else {
+    n += `<circle class="node" cx="${node.tpos[0]}" cy="${node.tpos[1]}" r="44" />`; 
   }
-  if (node.img) {
-    n += `<use href="#inner" x="${node.pos[0]}" y="${node.pos[1]}" />\n`;
-  }
+  // if (node.img) {
+  //   n += `<use href="#inner" x="${node.tpos[0]}" y="${node.tpos[1]}" />\n`;
+  // }
+  n += `</g>`;
   return n;
 }
 
@@ -129,9 +163,9 @@ function renderRosterNode( node, x, y ) {
 
 function renderConnection( a, b ) {
   if (b.data.awarded) {
-    return `<line class="con ${a.branch}" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
+    return `<line class="con ${a.branch}" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
   } else {
-    return `<line class="con" x1="${a.pos[0]}" y1="${a.pos[1]}" x2="${b.pos[0]}" y2="${b.pos[1]}" />`;
+    return `<line class="con" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
   }
 }
 
@@ -152,7 +186,7 @@ function renderBranch( name, nodes, origin ) {
     buffer.push(renderNode(circles[d]));
   }
   // console.log("Buffer", buffer);
-  return `<g id="${name}" class="tree">
+  return `<g id="${name}" class="tree gridded">
             ${buffer.join("\n")}
           </g>`;
 }

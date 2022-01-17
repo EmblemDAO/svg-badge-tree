@@ -59,7 +59,25 @@
     <script href="text/javascript" type="module">
       import assembly from "./assembly.js";
       import MOCK_BADGES from "./mockBadges.js";
-      document.getElementById('canvas').innerHTML = assembly(MOCK_BADGES);
+      const CANVAS = document.getElementById('canvas');
+      CANVAS.innerHTML = assembly(MOCK_BADGES);
+      const NEXUS = CANVAS.querySelector('#NEXUS');
+      var gridView = true;
+      CANVAS.addEventListener('click', (e) => {
+        gridView = !gridView;
+        CANVAS.querySelectorAll('.tree').forEach((tree) => {
+          if (gridView) tree.classList.add('gridded');
+          else tree.classList.remove('gridded');
+          NEXUS.classList.toggle('hidden');
+          tree.querySelectorAll('.gridItem').forEach((node) => {
+            const attr = JSON.parse(gridView ? node.dataset.gpos : node.dataset.tpos);
+            node.querySelectorAll('circle[data-awarded]').forEach((circle) => {
+              circle.setAttribute('cx', attr[0]);
+              circle.setAttribute('cy', attr[1]);
+            });
+          });
+        });
+      });
     </script>
   </body>
 </html>
