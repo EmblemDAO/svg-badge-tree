@@ -86,7 +86,7 @@ function gatherStyles( branchInfo ) {
               }
               ${classes.join("\n")}
               #NEXUS, .tree {
-                transition: opacity 1s ease;
+                transition: opacity .6s ease;
               }
               @media only screen and (max-width: 480px) {
                 #NEXUS, .tree { opacity: 0 }
@@ -122,7 +122,15 @@ function renderReusableElements() {
 }
 
 function renderNexus() {
-  return `<circle id="NEXUS" class="hidden" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4"/>`;
+  return `<circle id="NEXUS" class="hidden" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4">
+            <animateTransform attributeName="transform"
+            attributeType="XML"
+            type="rotate"
+            from="0 500 650"
+            to="360 500 650"
+            dur="16s"
+            repeatCount="indefinite"/>
+          </circle>`;
 }
 
 function createOriginNode( branch, index, total ) {
