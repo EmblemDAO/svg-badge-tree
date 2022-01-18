@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "author": "bloomingbridges",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },

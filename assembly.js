@@ -59,7 +59,7 @@ function gatherStyles( branchInfo ) {
               }
               .node,
               .icon {
-                transition: all .6s ease, opacity 0s;
+                transition: all 0.8s cubic-bezier(0.65, 0, 0.35, 1), opacity 0s;
               }
               .inner {
                 stroke-width: 6;
@@ -144,6 +144,7 @@ function createOriginNode( branch, index, total ) {
 function renderNode( node ) {
   const AWARDED = node.data.awarded;
   let n = `<g class="gridItem" data-tpos="[${node.tpos[0]}, ${node.tpos[1]}]" data-gpos="[${node.gpos[0]}, ${node.gpos[1]}]">`;
+  n += `<title>${node.data.definitionID || ""}</title>`;
   if (node.data.awarded) {
     n += `<circle class="${node.branch}" ${ (node.img) ? 'data-awarded' : '' } filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 42 : 12}"  />
          <circle class="node ${node.branch}" ${ (node.img) ? 'data-awarded' : '' } cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 44 : 14}" />`;
