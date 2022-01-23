@@ -47,7 +47,9 @@ function gatherStyles( branchInfo ) {
               .con {
                 stroke-width: 3;
                 stroke: #BFBFBF;
-                transition: opacity 0s;
+                stroke-dasharray: 200;
+                stroke-dashoffset: 0;
+                transition: opacity 0s, stroke-dashoffset 1s ease-out;
               }
               .gridItem text {
                 opacity: 0;
@@ -77,6 +79,9 @@ function gatherStyles( branchInfo ) {
               .gridded .node:not([data-awarded]),
               .gridded .icon:not([data-awarded]) {
                 opacity: 0;
+              }
+              .gridded .con {
+                stroke-dashoffset: 200;
               }
               .gridded .label {
                 opacity: 1;
