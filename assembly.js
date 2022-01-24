@@ -86,6 +86,10 @@ function gatherStyles( branchInfo ) {
               .gridded .label {
                 opacity: 1;
               }
+              #NEXUS {
+                font-size: 0.5em;
+                letter-spacing: 3px;
+              }
               #NEXUS.hidden {
                 opacity: 0;
               }
@@ -119,23 +123,27 @@ function gatherDefinitions( branchInfo ) {
 function renderReusableElements() {
   let elements = "<defs>\n";
   // Inner circles (part of node image background)
-  elements += `<g id="inner">
-                 <circle class="inner" cx="0" cy="0" r="34" />
-                 <circle class="inner" cx="0" cy="0" r="26" />
-               </g>`;
+  // elements += `<g id="inner">
+  //                <circle class="inner" cx="0" cy="0" r="34" />
+  //                <circle class="inner" cx="0" cy="0" r="26" />
+  //              </g>`;
+  elements += `<path transform="translate(500, 650)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircle" />`;
   return elements + "\n</defs>";
 }
 
-function renderNexus() {
-  return `<circle id="NEXUS" class="hidden" cx="500" cy="650" r="46" fill="none" stroke="white" stroke-width="4" stroke-dasharray="4 4">
+function renderNexus( address ) {
+  return `<text id="NEXUS" class="hidden" fill="white">
+            <textPath xlink:href="#nexusCircle">
+              ${address}
+            </textPath>
             <animateTransform attributeName="transform"
-            attributeType="XML"
-            type="rotate"
-            from="0 500 650"
-            to="360 500 650"
-            dur="16s"
-            repeatCount="indefinite"/>
-          </circle>`;
+              attributeType="XML"
+              type="rotate"
+              from="0 500 650"
+              to="359 500 650"
+              dur="16s"
+              repeatCount="indefinite"/>
+          </text>`;
 }
 
 function createOriginNode( branch, index, total ) {
@@ -167,9 +175,9 @@ function renderNode( node ) {
   } else {
     n += `<circle class="node" cx="${node.tpos[0]}" cy="${node.tpos[1]}" r="44" />`; 
   }
-  if (node.img) {
-    n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
-  }
+  // if (node.img) {
+  //   n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
+  // }
   n += `</g>`;
   return n;
 }
@@ -217,7 +225,7 @@ function renderRoster( roster ) {
 }
 
 // EXPORT /////////////////////////////////////////////////////////////////////
-export default function( nodes ) {
+export default function( nodes, address ) {
   const GRAPH = transformBadgeData(nodes)
       , INFO = [
         { name: 'A', col: '#EA3778' },
@@ -244,11 +252,12 @@ export default function( nodes ) {
   return `<svg viewBox="-220 0 1440 750" 
                preserveAspectRatio="xMidYMin slice"              
                xmlns="http://www.w3.org/2000/svg" 
-               xmlns:xlink="http://www.w3.org/1999/xlink">
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               style="background: #061111;">
             ${ gatherDefinitions(INFO) }
             ${ gatherStyles(INFO) }
             ${ renderReusableElements() }
-            ${ renderNexus() }
+            ${ renderNexus(address) }
             ${ renderRoster(roster) }
             ${ tree.join("\n") }
           </svg>`;

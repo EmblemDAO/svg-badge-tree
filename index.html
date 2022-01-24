@@ -41,7 +41,6 @@
       }
       main {
         padding: 0; 
-        background-color: #061111;
         margin: 1em auto;
         width: 100%;
         max-width: 1440px;
@@ -60,8 +59,11 @@
     <script href="text/javascript" type="module">
       import assembly from "./assembly.js";
       import MOCK_BADGES from "./mockBadges.js";
-      const CANVAS = document.getElementById('canvas');
-      CANVAS.innerHTML = assembly(MOCK_BADGES);
+      const CANVAS = document.getElementById('canvas')
+          , ETH_ADDRESS = "0xAeA63c8fCe3eAaC38E50904C987F8De3a6DaD82a";
+      CANVAS.innerHTML = assembly(MOCK_BADGES, ETH_ADDRESS);
+
+      // INTERACTIVITY //////////////////////////////////////////////////////////////////
       const NEXUS = CANVAS.querySelector('#NEXUS');
       var gridView = true;
       CANVAS.addEventListener('click', (e) => {
