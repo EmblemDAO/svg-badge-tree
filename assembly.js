@@ -67,8 +67,11 @@ function gatherStyles( branchInfo ) {
                 stroke-width: 6;
                 stroke: #808080;
               }
+              .text,
               .label {
                 fill: #7efcf6;
+              }
+              .label {
                 text-anchor: middle;
                 font-family: 'Inter', sans-serif;
                 font-size: 12px;
@@ -86,7 +89,7 @@ function gatherStyles( branchInfo ) {
               .gridded .label {
                 opacity: 1;
               }
-              #NEXUS {
+              .nexus {
                 font-size: 0.5em;
                 letter-spacing: 3px;
               }
@@ -94,7 +97,7 @@ function gatherStyles( branchInfo ) {
                 opacity: 0;
               }
               ${classes.join("\n")}
-              #NEXUS, .tree {
+              .nexus, .tree {
                 transition: opacity .6s ease;
               }
               @media only screen and (max-width: 480px) {
@@ -127,23 +130,38 @@ function renderReusableElements() {
   //                <circle class="inner" cx="0" cy="0" r="34" />
   //                <circle class="inner" cx="0" cy="0" r="26" />
   //              </g>`;
-  elements += `<path transform="translate(500, 650)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircle" />`;
+  elements += `<path transform="translate(500, 650)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircleOuter" />`;
+  elements += `<path transform="translate(500, 650) scale(0.8, 0.8)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircleInner" />`;
   return elements + "\n</defs>";
 }
 
 function renderNexus( address ) {
-  return `<text id="NEXUS" class="hidden" fill="white">
-            <textPath xlink:href="#nexusCircle">
-              ${address}
-            </textPath>
-            <animateTransform attributeName="transform"
-              attributeType="XML"
-              type="rotate"
-              from="0 500 650"
-              to="359 500 650"
-              dur="16s"
-              repeatCount="indefinite"/>
-          </text>`;
+  return `<g id="NEXUS" class="hidden">
+            <text class="nexus text">
+              <textPath xlink:href="#nexusCircleOuter">
+                ${address}
+              </textPath>
+              <animateTransform attributeName="transform"
+                attributeType="XML"
+                type="rotate"
+                from="0 500 650"
+                to="359 500 650"
+                dur="32s"
+                repeatCount="indefinite"/>
+            </text>
+            <text id="NEXUS" class="nexus" fill="white">
+              <textPath xlink:href="#nexusCircleInner">
+                emblemdao.com - emblemdao.com -
+              </textPath>
+              <animateTransform attributeName="transform"
+                attributeType="XML"
+                type="rotate"
+                from="0 500 650"
+                to="-359 500 650"
+                dur="32s"
+                repeatCount="indefinite"/>
+            </text>
+          </g>`;
 }
 
 function createOriginNode( branch, index, total ) {
