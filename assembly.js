@@ -220,8 +220,8 @@ function renderNode( node ) {
 
 function renderRosterNode( node, x, y ) {
   return `<circle class="${node.branch.toLowerCase()}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${x}" cy="${y}" r="42"  />
-          <circle class="node ${node.branch.toLowerCase()}" cx="${x}" cy="${y}" r="44" />
-          <use href="#${node.p}" x="${x}" y="${y}" />`;
+          <use href="#${node.p}" x="${x}" y="${y}" />
+          <text class="label" x="${x}" y="${y + 64}">${node.data.definitionID}</text>`;
 }
 
 function renderConnection( a, b ) {
@@ -277,7 +277,7 @@ export default function( nodes, address ) {
   let row = 0, col = 0;
   let roster = [];
   for (let n of ROSTER) {
-    roster.push(renderRosterNode(n, 510 + ((col - 1)) * 100, (row + 1) * 100 - 25));
+    roster.push(renderRosterNode(n, 510 + ((col - 1)) * 100, (row + 1) * 124 - 64));
     col += 1;
     if (col >= 3) {
       row += 1;
