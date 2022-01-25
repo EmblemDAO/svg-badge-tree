@@ -1,5 +1,6 @@
 function transformBadgeData( nodes ) {
-  const GRID_ITEMS = nodes.filter((node) => node.data && node.data.awarded);
+  // const GRID_ITEMS = nodes.filter((node) => node.data && node.data.awarded);
+  const GRID_ITEMS = nodes.filter((node) => node.data);
   return nodes.map(badge => ({
     ...badge
     , branch: badge.id.charAt(0)
@@ -7,6 +8,7 @@ function transformBadgeData( nodes ) {
     , tpos: transformPosition(badge.position)
     , gpos: generateGridPosition(badge, GRID_ITEMS)
     , img: badge.image
+    , p: "badge" + Math.ceil((Math.random() * 3)) // placeholder
     , branching: ['C-1', 'C-2', 'B-1', 'D-1'].includes(badge.id)
   }));
 }
@@ -34,8 +36,10 @@ function generateGridPosition( badge, pool ) {
 function gatherStyles( branchInfo ) {
   const classes = branchInfo.map( branch => {
     return `.${branch.name} {
-              stroke: ${branch.col};
               fill: ${branch.col};
+            }
+            .${branch.name}_ {
+              stroke: ${branch.col};
             }
             .${branch.name.toLowerCase()} {
               stroke: ${branch.col};
@@ -49,7 +53,7 @@ function gatherStyles( branchInfo ) {
                 stroke: #BFBFBF;
                 stroke-dasharray: 200;
                 stroke-dashoffset: 0;
-                transition: opacity 0s, stroke-dashoffset 1s ease-out;
+                transition: opacity 0s, stroke-dashoffset 2s ease-out;
               }
               .gridItem text {
                 opacity: 0;
@@ -79,8 +83,7 @@ function gatherStyles( branchInfo ) {
                 transition: opacity .6s ease;
               }
               .gridded .con,
-              .gridded .node:not([data-awarded]),
-              .gridded .icon:not([data-awarded]) {
+              .gridded .origin {
                 opacity: 0;
               }
               .gridded .con {
@@ -119,19 +122,26 @@ function gatherDefinitions( branchInfo ) {
             </filter>`;
   });
   return `<defs>
+            <filter id="greyscale">
+              <feColorMatrix type="matrix" values="0.1 0.1 0.1 0 0 0.1 0.1 0.1 0 0 0.1 0.1 0.1 0 0 0 0 0 1 0"/>
+            </filter>
             ${defs.join("\n")}
           </defs>`;
 }
 
-function renderReusableElements() {
+function renderReusableElements( nodes ) {
+  let images = [];
   let elements = "<defs>\n";
-  // Inner circles (part of node image background)
-  // elements += `<g id="inner">
-  //                <circle class="inner" cx="0" cy="0" r="34" />
-  //                <circle class="inner" cx="0" cy="0" r="26" />
-  //              </g>`;
+  // Nexus text paths
   elements += `<path transform="translate(500, 650)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircleOuter" />`;
   elements += `<path transform="translate(500, 650) scale(0.8, 0.8)" d="M0,-46 C-25.4050985,-46 -46,-25.4050985 -46,0 C-46,25.4050985 -25.4050985,46 0,46 C25.4050985,46 46,25.4050985 46,0 C46,-25.4050985 25.4050985,-46 0,-46 Z" id="nexusCircleInner" />`;
+  // Badge icons
+  nodes.forEach((node) => {
+    if (!images.includes(node.p)) {
+      elements += `<g id="${node.p}"><image href="/assets/${node.p}.png" x="-48" y="-48" width="96" height="96" /></g>`;
+      images.push(node.p);
+    }
+  });
   return elements + "\n</defs>";
 }
 
@@ -185,17 +195,20 @@ function renderNode( node ) {
   let n = `<g class="gridItem" data-tpos="[${node.tpos[0]}, ${node.tpos[1]}]" data-gpos="[${node.gpos[0]}, ${node.gpos[1]}]">`;
   n += `<title>${node.data.definitionID || ""}</title>`;
   if (node.data.awarded) {
-    n += `<circle class="${node.branch}" ${ (node.img) ? 'data-awarded' : '' } filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 42 : 12}"  />
-         <circle class="node ${node.branch}" ${ (node.img) ? 'data-awarded' : '' } cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 44 : 14}" />`;
-    if (node.data.definitionID) {
-      n += `<text class="label" x="${node.gpos[0]}" y="${node.gpos[1] + 64}">${node.data.definitionID}</text>`;
+    n += `<circle class="${node.branch}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="${node.img ? 42 : 12}"  />`;
+    if (!node.img) {
+      n += `<circle class="node origin ${node.branch}_" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="14" />`;
     }
   } else {
-    n += `<circle class="node" cx="${node.tpos[0]}" cy="${node.tpos[1]}" r="44" />`; 
+    // n += `<circle class="node" cx="${node.gpos[0]}" cy="${node.gpos[1]}" r="44" />`; 
   }
-  // if (node.img) {
-  //   n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
-  // }
+  if (node.data.definitionID) {
+    n += `<text class="label" x="${node.gpos[0]}" y="${node.gpos[1] + 64}">${node.data.definitionID}</text>`;
+  }
+  if (node.p) {
+    // n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
+    n += `<use class="icon" href="#${node.p}" x="${node.gpos[0]}" y="${node.gpos[1]}"  ${ AWARDED ? 'data-awarded' : 'filter="url(#greyscale)"' } />`;
+  }
   n += `</g>`;
   return n;
 }
@@ -203,12 +216,12 @@ function renderNode( node ) {
 function renderRosterNode( node, x, y ) {
   return `<circle class="${node.branch.toLowerCase()}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${x}" cy="${y}" r="42"  />
           <circle class="node ${node.branch.toLowerCase()}" cx="${x}" cy="${y}" r="44" />
-          <use href="#inner" x="${x}" y="${y}" />`;
+          <use href="#${node.p}" x="${x}" y="${y}" />`;
 }
 
 function renderConnection( a, b ) {
   if (b.data.awarded) {
-    return `<line class="con ${a.branch}" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
+    return `<line class="con ${a.branch}_" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
   } else {
     return `<line class="con" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
   }
@@ -274,7 +287,7 @@ export default function( nodes, address ) {
                style="background: #061111;">
             ${ gatherDefinitions(INFO) }
             ${ gatherStyles(INFO) }
-            ${ renderReusableElements() }
+            ${ renderReusableElements(GRAPH) }
             ${ renderNexus(address) }
             ${ renderRoster(roster) }
             ${ tree.join("\n") }

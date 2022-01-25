@@ -76,27 +76,27 @@ export default [
     id: TRACK_INDEXING_D + 1,
     image: "/images/scifi/7.svg",
     position: position(-0.25, 4.75),
-    data: { awarded: false },
+    data: { awarded: false, definitionID: "UNDEFINED" },
   },
   {
     id: TRACK_INDEXING_D + 2,
     image: "/images/scifi/7.svg",
     position: position(0.5, 5.75),
-    data: { awarded: false },
+    data: { awarded: false, definitionID: "UNDEFINED" },
   },
 
   {
     id: TRACK_INDEXING_E + 1,
     image: "/images/scifi/8.svg",
     position: position(-1.75, 4.75),
-    data: { awarded: false },
+    data: { awarded: false, definitionID: "UNDEFINED" },
   },
 
   {
     id: TRACK_INDEXING_E + 2,
     image: "/images/scifi/8.svg",
     position: position(-2.5, 5.75),
-    data: { awarded: false },
+    data: { awarded: false, definitionID: "UNDEFINED" },
   },
 
   {
