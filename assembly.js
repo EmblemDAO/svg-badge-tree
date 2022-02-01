@@ -1,28 +1,28 @@
-function transformBadgeData( nodes ) {
+function transformBadgeData(nodes) {
   // const GRID_ITEMS = nodes.filter((node) => node.data && node.data.awarded);
   const GRID_ITEMS = nodes.filter((node) => node.data);
   return nodes.map(badge => ({
     ...badge
     , branch: badge.id.charAt(0)
-    , index: parseInt(badge.id.charAt(badge.id.length-1)) 
+    , index: parseInt(badge.id.charAt(badge.id.length - 1))
     , tpos: transformPosition(badge.position)
     , gpos: generateGridPosition(badge, GRID_ITEMS)
     , img: badge.image
-    , p: "badge" + Math.ceil((Math.random() * 3)) // placeholder
+    , p: badge.image // placeholder
     , branching: ['C-1', 'C-2', 'B-1', 'D-1'].includes(badge.id)
   }));
 }
 
-function transformPosition( coords ) {
+function transformPosition(coords) {
   let x = 600 + (coords[0] * 100)
     , y = 650 - (coords[1] * 100);
   return [x, y];
 }
 
-function generateGridPosition( badge, pool ) {
+function generateGridPosition(badge, pool) {
   const INDEX = pool.indexOf(badge)
-      , COLS = 8
-      , COL_WIDTH = 1240 / COLS;
+    , COLS = 8
+    , COL_WIDTH = 1240 / COLS;
   if (INDEX >= 0) {
     let col = (INDEX > COLS) ? INDEX % pool.length : INDEX;
     const row = Math.floor(INDEX / COLS);
@@ -33,8 +33,8 @@ function generateGridPosition( badge, pool ) {
   }
 }
 
-function gatherStyles( branchInfo ) {
-  const classes = branchInfo.map( branch => {
+function gatherStyles(branchInfo) {
+  const classes = branchInfo.map(branch => {
     return `.${branch.name} {
               fill: ${branch.col};
             }
@@ -118,7 +118,7 @@ function gatherStyles( branchInfo ) {
           </style> `;
 }
 
-function gatherDefinitions( branchInfo ) {
+function gatherDefinitions(branchInfo) {
   let defs = branchInfo.map((b) => {
     return `<filter id="f${b.name}" x="-50%" y="-50%" width="400%" height="400%">
               <feOffset result="offOut" in="SourceGraphic" dx="0" dy="2" />
@@ -134,7 +134,7 @@ function gatherDefinitions( branchInfo ) {
           </defs>`;
 }
 
-function renderReusableElements( nodes ) {
+function renderReusableElements(nodes) {
   let images = [];
   let elements = "<defs>\n";
   // Nexus text paths
@@ -143,14 +143,14 @@ function renderReusableElements( nodes ) {
   // Badge icons
   nodes.forEach((node) => {
     if (!images.includes(node.p)) {
-      elements += `<g id="${node.p}"><image href="/assets/${node.p}.png" x="-48" y="-48" width="96" height="96" /></g>`;
+      elements += `<g id="${node.p}"><image href="/assets/${node.p}" x="-48" y="-48" width="96" height="96" /></g>`;
       images.push(node.p);
     }
   });
   return elements + "\n</defs>";
 }
 
-function renderNexus( address ) {
+function renderNexus(address) {
   return `<g id="NEXUS" class="hidden">
             <text class="nexus text">
               <textPath xlink:href="#nexusCircleOuter">
@@ -179,7 +179,7 @@ function renderNexus( address ) {
           </g>`;
 }
 
-function createOriginNode( branch, index, total ) {
+function createOriginNode(branch, index, total) {
   let a = (index / total) * Math.PI
     , r = 84
     , x = 500 + Math.cos(Math.PI + a) * r
@@ -195,7 +195,7 @@ function createOriginNode( branch, index, total ) {
   }
 }
 
-function renderNode( node ) {
+function renderNode(node) {
   const AWARDED = node.data.awarded;
   let n = `<g class="gridItem" data-tpos="[${node.tpos[0]}, ${node.tpos[1]}]" data-gpos="[${node.gpos[0]}, ${node.gpos[1]}]">`;
   n += `<title>${node.data.definitionID || ""}</title>`;
@@ -212,19 +212,19 @@ function renderNode( node ) {
   }
   if (node.p) {
     // n += `<use class="icon" ${ AWARDED ? 'data-awarded' : '' } href="#inner" x="${AWARDED ? node.gpos[0] : node.tpos[0]}" y="${ AWARDED ? node.gpos[1] : node.tpos[1]}" />\n`;
-    n += `<use class="icon" href="#${node.p}" x="${node.gpos[0]}" y="${node.gpos[1]}"  ${ AWARDED ? 'data-awarded' : 'filter="url(#greyscale)"' } />`;
+    n += `<use class="icon" href="#${node.p}" x="${node.gpos[0]}" y="${node.gpos[1]}"  ${AWARDED ? 'data-awarded' : 'filter="url(#greyscale)"'} />`;
   }
   n += `</g>`;
   return n;
 }
 
-function renderRosterNode( node, x, y ) {
+function renderRosterNode(node, x, y) {
   return `<circle class="${node.branch.toLowerCase()}" filter="url(#f${node.branch}${node.img ? '' : 'c'})" cx="${x}" cy="${y}" r="42"  />
           <use href="#${node.p}" x="${x}" y="${y}" />
           <text class="label" x="${x}" y="${y + 64}">${node.data.definitionID}</text>`;
 }
 
-function renderConnection( a, b ) {
+function renderConnection(a, b) {
   if (b.data.awarded) {
     return `<line class="con ${a.branch}_" x1="${a.tpos[0]}" y1="${a.tpos[1]}" x2="${b.tpos[0]}" y2="${b.tpos[1]}" />`;
   } else {
@@ -232,19 +232,19 @@ function renderConnection( a, b ) {
   }
 }
 
-function renderBranch( name, nodes, origin ) {
+function renderBranch(name, nodes, origin) {
   console.log('Rendering branch with', nodes);
   let buffer = []
     , circles = [origin, ...nodes];
   let branchNode = circles[1];
   for (let c = 1; c < circles.length; c++) {
-    if (c >= 1 && circles[c-1].branching) 
-      branchNode = circles[c-1];
-    let a = ((circles[c].index == 1 && circles[c].id.length > 3) || 
-              circles[c].id === 'C-2') ? branchNode : circles[c-1]
+    if (c >= 1 && circles[c - 1].branching)
+      branchNode = circles[c - 1];
+    let a = ((circles[c].index == 1 && circles[c].id.length > 3) ||
+      circles[c].id === 'C-2') ? branchNode : circles[c - 1]
       , b = circles[c];
     buffer.push(renderConnection(a, b));
-  } 
+  }
   for (let d = 0; d < circles.length; d++) {
     buffer.push(renderNode(circles[d]));
   }
@@ -254,25 +254,25 @@ function renderBranch( name, nodes, origin ) {
           </g>`;
 }
 
-function renderRoster( roster ) {
+function renderRoster(roster) {
   return `<g id="roster">
             ${roster.join("\n")}
           </g>`;
 }
 
 // EXPORT /////////////////////////////////////////////////////////////////////
-export default function( nodes, address ) {
+export default function (nodes, address) {
   const GRAPH = transformBadgeData(nodes)
-      , INFO = [
-        { name: 'A', col: '#EA3778' },
-        { name: 'B', col: "#FCF151" },
-        { name: 'C', col: "#E93323" },
-        { name: 'D', col: "#75FBF3" },
-        { name: 'E', col: "#9EFC4E" }]
-      , ROSTER = GRAPH.filter((node) => node.data && node.data.awarded);
+    , INFO = [
+      { name: 'A', col: '#EA3778' },
+      { name: 'B', col: "#FCF151" },
+      { name: 'C', col: "#E93323" },
+      { name: 'D', col: "#75FBF3" },
+      { name: 'E', col: "#9EFC4E" }]
+    , ROSTER = GRAPH.filter((node) => node.data && node.data.awarded);
   // console.log(GRAPH);
   let tree = INFO.map((b, i) => {
-    return renderBranch(b.name, GRAPH.filter(node => node.branch === b.name), createOriginNode(b.name, i, INFO.length-1));
+    return renderBranch(b.name, GRAPH.filter(node => node.branch === b.name), createOriginNode(b.name, i, INFO.length - 1));
   });
   let row = 0, col = 0;
   let roster = [];
@@ -290,11 +290,11 @@ export default function( nodes, address ) {
                xmlns="http://www.w3.org/2000/svg" 
                xmlns:xlink="http://www.w3.org/1999/xlink"
                style="background: #061111;">
-            ${ gatherDefinitions(INFO) }
-            ${ gatherStyles(INFO) }
-            ${ renderReusableElements(GRAPH) }
-            ${ renderNexus(address) }
-            ${ renderRoster(roster) }
-            ${ tree.join("\n") }
+            ${gatherDefinitions(INFO)}
+            ${gatherStyles(INFO)}
+            ${renderReusableElements(GRAPH)}
+            ${renderNexus(address)}
+            ${renderRoster(roster)}
+            ${tree.join("\n")}
           </svg>`;
 }
